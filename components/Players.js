@@ -11,6 +11,7 @@
  */
 import React, { useState, useEffect } from 'react';
 import htm from 'htm';
+import { Skeleton, EmptyState } from './ui.js';
 import { db, getSofascoreBadgeStyle } from '../services/database.js';
 import { t as fallbackT, getDivisionLabel as fallbackGetDivisionLabel, isMatchDivision } from '../services/i18n.js';
 
@@ -21,6 +22,7 @@ export default function Players({ activeDivision, activeYear, lang = 'en', t = (
   const [classes, setClasses] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClass, setSelectedClass] = useState('All');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadPlayersData = async () => {
@@ -71,30 +73,32 @@ export default function Players({ activeDivision, activeYear, lang = 'en', t = (
   return html`
     <div className="space-y-6 animate-fadeIn">
       <!-- Title & Header -->
-      <div>
-        <h2 className="text-2xl font-black text-purple-950 font-sans">${t('playersTitle')} — ${getDivisionLabel(activeDivision)}</h2>
-        <p className="text-sm text-gray-500">${lang === 'az' ? 'Sofascore reytinq sistemi ilə hesablanmış performans statistikası' : 'Performance statistics evaluated with the Sofascore rating engine'}</p>
+      <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-3">
+        <div>
+          <h2 className="text-2xl font-black text-purple-950 font-sans tracking-tight">${t('playersTitle')} - ${getDivisionLabel(activeDivision)}</h2>
+          <p className="text-sm text-gray-500 font-medium mt-1">${lang === 'az' ? 'Sofascore reytinq sistemi və mövsüm statistikası' : 'Sofascore rating system and season stats'}</p>
+        </div>
       </div>
 
       <!-- Filters Panel -->
-      <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-stretch">
-        <div className="relative flex-1">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
-            <i className="fas fa-search text-xs"></i>
+      <div className="bg-white p-4 rounded-3xl border border-gray-200 shadow-sm flex flex-col md:flex-row gap-3 items-center">
+        <div className="relative w-full md:flex-1">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </span>
           <input
             type="text"
             value=${searchTerm}
             onChange=${(e) => setSearchTerm(e.target.value)}
             placeholder=${t('searchPlayerPlaceholder')}
-            className="w-full bg-gray-50 border border-gray-200 text-purple-950 text-xs rounded-2xl focus:ring-purple-900 focus:border-purple-900 block pl-10 pr-3 py-3"
+            className="w-full bg-gray-50/50 border border-gray-200 text-purple-950 text-sm rounded-2xl focus:ring-purple-600 focus:border-purple-600 block pl-11 pr-4 py-3 min-h-[44px] transition-all"
           />
         </div>
         <div className="w-full md:w-64">
           <select
             value=${selectedClass}
             onChange=${(e) => setSelectedClass(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 text-purple-950 text-xs rounded-2xl focus:ring-purple-900 focus:border-purple-900 block p-3 font-semibold"
+            className="w-full bg-gray-50/50 border border-gray-200 text-purple-950 text-sm rounded-2xl focus:ring-purple-600 focus:border-purple-600 block px-4 py-3 min-h-[44px] font-semibold transition-all appearance-none"
           >
             <option value="All">${t('filterClassAll')}</option>
             ${activeClasses.map(cls => html`
@@ -104,100 +108,92 @@ export default function Players({ activeDivision, activeYear, lang = 'en', t = (
         </div>
       </div>
 
-      <!-- Players Cards Grid -->
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        ${sortedPlayers.length === 0 
-          ? html`
-              <div className="col-span-3 text-center py-12 text-gray-400 bg-white rounded-3xl border border-dashed border-gray-200">
-                ${t('noPlayersFound')}
-              </div>
-            `
-          : sortedPlayers.map((player, idx) => {
-              const rating = player.overallRating || 6.5;
-              const badgeClass = getSofascoreBadgeStyle(rating);
-              const isKeeper = player.isKeeper ||
-                (player.position || '').toLowerCase().includes('qap');
+      <!-- Loading / Empty / Data -->
+      ${isLoading ? html`
+        <div className="flex flex-col gap-3">
+          <${Skeleton} className="h-20 w-full rounded-2xl" />
+          <${Skeleton} className="h-20 w-full rounded-2xl" />
+          <${Skeleton} className="h-20 w-full rounded-2xl" />
+        </div>
+      ` : sortedPlayers.length === 0 ? html`
+        <${EmptyState} message=${t('noPlayersFound')} icon=${html`<svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>`} />
+      ` : html`
+        <div className="flex flex-col gap-3">
+          ${sortedPlayers.map((player, idx) => {
+            const rating = player.overallRating || 6.5;
+            const badgeClass = getSofascoreBadgeStyle(rating);
+            const posLower = (player.position || '').toLowerCase();
+            const isKeeper = player.isKeeper || posLower.includes('qap') || posLower.includes('gk');
+            const isDef = posLower.includes('müdafiə') || posLower.includes('def') || posLower.includes('defans');
+            const isMid = posLower.includes('yarımmüdafiə') || posLower.includes('mid');
+            
+            let posBadgeColor = "bg-rose-100 text-rose-700 border-rose-200"; // Default FWD
+            let posText = "FWD";
+            if (isKeeper) { posBadgeColor = "bg-amber-100 text-amber-700 border-amber-200"; posText = "GK"; }
+            else if (isDef) { posBadgeColor = "bg-sky-100 text-sky-700 border-sky-200"; posText = "DEF"; }
+            else if (isMid) { posBadgeColor = "bg-emerald-100 text-emerald-700 border-emerald-200"; posText = "MID"; }
 
-              const rankColors = [
-                'bg-yellow-400 text-yellow-900',
-                'bg-gray-300 text-gray-700',
-                'bg-amber-600 text-white'
-              ];
+            return html`
+              <div 
+                key=${player.id} 
+                onClick=${() => onOpenPlayerProfile && onOpenPlayerProfile(player.name)}
+                className="group flex flex-col sm:flex-row items-center gap-4 bg-white border border-gray-200 rounded-2xl p-3 sm:p-4 hover:border-purple-300 hover:shadow-md transition-all cursor-pointer relative overflow-hidden"
+              >
+                <!-- Rank Indicator for Top 3 -->
+                ${idx < 3 ? html`
+                  <div className="absolute top-0 left-0 w-1.5 h-full ${idx === 0 ? 'bg-yellow-400' : idx === 1 ? 'bg-gray-400' : 'bg-amber-700'}"></div>
+                ` : html`
+                  <div className="absolute top-0 left-0 w-1 h-full bg-gray-100 group-hover:bg-purple-200 transition-colors"></div>
+                `}
 
-              return html`
-                <div
-                  key=${player.id}
-                  className="sport-card-hover bg-white border border-gray-100 rounded-3xl p-4 sm:p-6 shadow-sm flex flex-col justify-between relative overflow-hidden"
-                >
-                  <!-- Top colour bar -->
-                  <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-900 to-purple-800"></div>
-
-                  <!-- Top-3 rank medal -->
-                  ${idx < 3 ? html`
-                    <div className=${"absolute top-3 left-3 w-6 h-6 rounded-full flex items-center justify-center font-black text-[10px] shadow " + rankColors[idx]}>
-                      ${idx + 1}
-                    </div>
-                  ` : null}
-
-                  <!-- Player Details row -->
-                  <div className="flex justify-between items-start mb-4 sm:mb-6 gap-2">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                        <span className="text-[10px] font-black text-purple-900 bg-purple-50 px-2 py-0.5 rounded uppercase tracking-wider">
-                          ${player.class} Sinfi
-                        </span>
-                        ${isKeeper ? html`
-                          <span className="text-[10px] font-black text-sky-700 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded uppercase tracking-wider">
-                            🧤 ${lang === 'az' ? 'Qapıçı' : 'Goalkeeper'}
-                          </span>
-                        ` : null}
-                      </div>
-                      <h3
-                        onClick=${() => onOpenPlayerProfile && onOpenPlayerProfile(player.name)}
-                        className="text-base font-black text-purple-950 dark:text-purple-200 mt-1.5 leading-snug cursor-pointer hover:underline hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center gap-1.5"
-                        title=${lang === 'az' ? 'Karyera profilinə bax' : 'View career profile'}
-                      >
-                        ${player.name}
-                        <i className="fas fa-arrow-up-right-from-square text-[10px] text-purple-400 opacity-60"></i>
-                      </h3>
-                      <p className="text-xs text-gray-400 font-semibold mt-0.5">${player.position || '—'}</p>
-                    </div>
-
-                    <!-- Sofascore badge -->
-                    <div className=${"min-w-[3.5rem] h-14 rounded-2xl flex flex-col items-center justify-center px-2 shadow-md " + badgeClass}>
-                      <span className="text-base leading-none">${rating}</span>
-                      <span className="text-[8px] font-semibold opacity-80 mt-0.5">${t('rating')}</span>
-                    </div>
+                <!-- Player Identity -->
+                <div className="flex-1 flex items-center gap-4 pl-2 w-full sm:w-auto">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center border border-purple-200 shrink-0 shadow-sm text-purple-700 font-black text-lg">
+                    ${player.name.charAt(0).toUpperCase()}
                   </div>
-
-                  <!-- Stats row -->
-                  <div className="grid grid-cols-3 gap-2 bg-gray-50 p-3 rounded-2xl border border-gray-100 text-center">
-                    <div>
-                      <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block">${t('matchesPlayed')}</span>
-                      <span className="text-base font-extrabold text-purple-950">${player.matchesPlayed || 0}</span>
-                    </div>
-                    <div className="border-x border-gray-200 dark:border-slate-800">
-                      ${isKeeper
-                        ? html`
-                          <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block">${lang === 'az' ? 'Qurtarış' : 'Saves'}</span>
-                          <span className="text-base font-extrabold text-sky-700 dark:text-sky-400">🧤 ${player.saves || 0}</span>
-                        `
-                        : html`
-                          <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block">${t('goals')}</span>
-                          <span className="text-base font-extrabold text-emerald-700 dark:text-emerald-400">⚽ ${player.goals || 0}</span>
-                        `
-                      }
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block">${t('assists')}</span>
-                      <span className="text-base font-extrabold text-purple-900 dark:text-purple-300">👟 ${player.assists || 0}</span>
+                  <div className="flex flex-col">
+                    <span className="font-extrabold text-gray-900 text-lg group-hover:text-purple-700 transition-colors line-clamp-1">${player.name}</span>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">${player.class}</span>
+                      <span className=`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border ${posBadgeColor}`>
+                        ${posText}
+                      </span>
                     </div>
                   </div>
                 </div>
-              `;
-            })
-        }
-      </div>
+
+                <!-- Stats Divider on Mobile -->
+                <div className="w-full h-px bg-gray-100 sm:hidden mt-2 mb-1"></div>
+
+                <!-- Stats / Rating -->
+                <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto pr-2">
+                  
+                  <div className="flex items-center gap-5 sm:gap-6 text-center">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase">QOL</span>
+                      <span className="text-lg font-black text-gray-900 tabular-nums leading-tight">${player.goals || 0}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase">AST</span>
+                      <span className="text-lg font-black text-gray-900 tabular-nums leading-tight">${player.assists || 0}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase">OYN</span>
+                      <span className="text-lg font-black text-gray-500 tabular-nums leading-tight">${player.matchesPlayed || 0}</span>
+                    </div>
+                  </div>
+
+                  <!-- Sofascore Badge -->
+                  <div className=`w-12 h-12 rounded-xl flex items-center justify-center font-black tabular-nums text-lg shadow-sm ${badgeClass}`>
+                    ${rating}
+                  </div>
+                </div>
+
+              </div>
+            `;
+          })}
+        </div>
+      `}
     </div>
   `;
 }

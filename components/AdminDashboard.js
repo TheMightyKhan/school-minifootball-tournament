@@ -721,7 +721,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
               <div className="flex space-x-2 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-purple-800 transition"
+                  className="flex-1 bg-purple-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-purple-800 transition min-h-[44px] btn-spring"
                 >
                   ${editingMatch ? 'Yadda Saxla' : 'Matç Əlavə Et'}
                 </button>
@@ -857,7 +857,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
               <div className="flex space-x-2 pt-2">
                 <button
                   type="submit"
-                  className="flex-1 bg-purple-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-purple-800 transition"
+                  className="flex-1 bg-purple-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-purple-800 transition min-h-[44px] btn-spring"
                 >
                   ${editingPlayer ? 'Yadda Saxla' : 'Oyunçu Əlavə Et'}
                 </button>
@@ -965,7 +965,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full bg-purple-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-purple-800 transition"
+                  className="w-full bg-purple-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-purple-800 transition min-h-[44px] btn-spring"
                 >
                   Sinif Əlavə Et
                 </button>
@@ -1032,7 +1032,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full bg-purple-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-purple-800 transition"
+                  className="w-full bg-purple-900 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-purple-800 transition min-h-[44px] btn-spring"
                 >
                   Tədris İli Əlavə Et
                 </button>
@@ -1094,7 +1094,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
             <div className="pt-4 flex flex-col space-y-3">
               <button
                 onClick=${handleResetSystem}
-                className="bg-red-600 text-white font-bold py-3 rounded-2xl text-xs hover:bg-red-700 transition shadow-sm"
+                className="bg-red-600 text-white font-bold py-3 rounded-2xl text-xs hover:bg-red-700 transition shadow-sm min-h-[44px] btn-spring"
               >
                 <i className="fas fa-trash-alt mr-2"></i> Sistem Məlumatlarını Sıfırla (Default Seeding)
               </button>
@@ -1116,7 +1116,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
                   type="file"
                   accept=".json"
                   onChange=${handleImportJSON}
-                  className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-green-100 file:text-green-800 hover:file:bg-green-200 cursor-pointer pt-1"
+                  className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-green-100 file:text-green-800 hover:file:bg-green-200 cursor-pointer pt-1 min-h-[44px] btn-spring"
                 />
               </div>
 
@@ -1124,7 +1124,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
               
               <button
                 onClick=${handleLogout}
-                className="bg-purple-950 text-white font-bold py-3 rounded-2xl text-xs hover:bg-purple-900 transition shadow-sm"
+                className="bg-purple-950 text-white font-bold py-3 rounded-2xl text-xs hover:bg-purple-900 transition shadow-sm min-h-[44px] btn-spring"
               >
                 <i className="fas fa-sign-out-alt mr-2"></i> Admin Panelindən Çıxış (Sessiyanı Bağla)
               </button>
@@ -1156,7 +1156,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
               <div className="flex items-center gap-3">
                 <button
                   onClick=${handleRunHealthAudit}
-                  className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-4 py-2.5 rounded-2xl transition border border-white/20 flex items-center gap-2"
+                  className="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-4 py-2.5 rounded-2xl transition border border-white/20 flex items-center gap-2 min-h-[44px] btn-spring"
                 >
                   <i className="fas fa-rotate"></i>
                   <span>Yenidən Yoxla</span>
@@ -1164,7 +1164,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
                 <button
                   onClick=${handleAutoRepair}
                   disabled=${isHealing}
-                  className="bg-emerald-500 hover:bg-emerald-400 text-purple-950 text-xs font-black px-5 py-2.5 rounded-2xl transition shadow-md flex items-center gap-2 disabled:opacity-50"
+                  className="bg-emerald-500 hover:bg-emerald-400 text-purple-950 text-xs font-black px-5 py-2.5 rounded-2xl transition shadow-md flex items-center gap-2 disabled:opacity-50 min-h-[44px] btn-spring"
                 >
                   <i className=${`fas ${isHealing ? 'fa-spinner fa-spin' : 'fa-wrench'}`}></i>
                   <span>${isHealing ? 'Bərpa edilir...' : 'İndi Avto-Bərpa Et'}</span>
@@ -1301,7 +1301,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
                   <button
                     onClick=${handleRunAiAudit}
                     disabled=${isAiAuditing}
-                    className="bg-purple-900 hover:bg-purple-800 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 disabled:opacity-50"
+                    className="bg-purple-900 hover:bg-purple-800 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 disabled:opacity-50 min-h-[44px] btn-spring"
                   >
                     <i className=${`fas ${isAiAuditing ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'}`}></i>
                     <span>${isAiAuditing ? 'Analiz Edilir...' : 'AI Analizi Başlat'}</span>
@@ -1458,13 +1458,13 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
                     <button
                       type="button"
                       onClick=${handlePurgeApiKey}
-                      className="text-[11px] text-rose-600 hover:text-rose-800 font-bold px-3 py-2 rounded-xl transition hover:bg-rose-50 border border-transparent hover:border-rose-200"
+                      className="text-[11px] text-rose-600 hover:text-rose-800 font-bold px-3 py-2 rounded-xl transition hover:bg-rose-50 border border-transparent hover:border-rose-200 min-h-[44px] btn-spring"
                     >
                       <i className="fas fa-trash-can mr-1"></i> Açarı Təmizlə
                     </button>
                     <button
                       type="submit"
-                      className="bg-purple-950 hover:bg-purple-900 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm"
+                      className="bg-purple-950 hover:bg-purple-900 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow-sm min-h-[44px] btn-spring"
                     >
                       Yadda Saxla
                     </button>
@@ -1587,7 +1587,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
                   <button
                     type="submit"
                     disabled=${isAiChatLoading || !aiChatQuery.trim()}
-                    className="bg-purple-950 hover:bg-purple-900 text-white font-bold px-4 rounded-xl text-xs transition disabled:opacity-50"
+                    className="bg-purple-950 hover:bg-purple-900 text-white font-bold px-4 rounded-xl text-xs transition disabled:opacity-50 min-h-[44px] btn-spring"
                   >
                     <i className="fas fa-paper-plane"></i>
                   </button>
@@ -1703,7 +1703,7 @@ export default function AdminDashboard({ activeDivision, activeYear, onYearsChan
               </button>
               <button
                 onClick=${handleSaveRatings}
-                className="bg-purple-900 hover:bg-purple-800 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition"
+                className="bg-purple-900 hover:bg-purple-800 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition min-h-[44px] btn-spring"
               >
                 Yadda Saxla
               </button>

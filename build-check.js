@@ -7,7 +7,11 @@ const filesToCheck = [
   'Dashboard.js',
   'PlayerProfileModal.js',
   'MatchAnalyticsModal.js',
-  'ui.js'
+  'ui.js',
+  'Players.js',
+  'GlobalSearchModal.js',
+  'PublicAiChatbot.js',
+  'AdminDashboard.js'
 ];
 
 console.log('Build check started...');
@@ -23,10 +27,11 @@ filesToCheck.forEach(file => {
   
   try {
     // node --check parses the file for syntax errors
-    execSync(`node --check "${filePath}"`, { stdio: 'inherit' });
+    execSync(`node --check "${filePath}"`, { stdio: 'pipe' });
     console.log(`SUCCESS: ${file} passed syntax check.`);
   } catch (err) {
     console.error(`ERROR in ${file}: Syntax error detected.`);
+    console.error(err.stderr ? err.stderr.toString() : err.message);
     hasError = true;
   }
 });

@@ -108,117 +108,109 @@ export default function PublicAiChatbot({ activeYear = '2022-2023', activeDivisi
       ${!isOpen && html`
         <button
           onClick=${() => setIsOpen(true)}
-          className="pointer-events-auto group flex items-center gap-2 bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-950 hover:from-purple-800 hover:to-indigo-800 text-white px-3.5 py-3 sm:px-4 sm:py-3.5 rounded-full shadow-2xl hover:shadow-purple-500/25 transition transform hover:scale-105 active:scale-95 border border-purple-700/50"
-          title="Turnir AI Köməkçisi"
+          className="pointer-events-auto flex items-center gap-2 bg-[#1C1C1E] hover:bg-[#2C2C2E] text-white px-4 py-3.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all active:scale-95 border border-white/10"
         >
-          <div className="relative">
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full animate-ping"></span>
-            <span className="w-2.5 h-2.5 bg-emerald-400 rounded-full inline-block absolute -top-1 -right-1"></span>
-            <i className="fas fa-robot text-base sm:text-lg text-purple-200"></i>
+          <div className="relative flex items-center justify-center">
+            <span className="absolute top-0 right-0 w-2 h-2 bg-emerald-400 rounded-full animate-ping opacity-75"></span>
+            <span className="absolute top-0 right-0 w-2 h-2 bg-emerald-500 rounded-full"></span>
+            <svg className="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
           </div>
-          <span className="text-xs font-black tracking-wide pr-1">Turnir AI</span>
-          <i className="fas fa-futbol text-emerald-400 text-xs sm:text-sm group-hover:rotate-45 transition"></i>
+          <span className="text-xs font-bold tracking-wide pr-1">${lang === 'az' ? 'AI Köməkçi' : 'AI Assistant'}</span>
         </button>
       `}
 
       <!-- Chat Window Modal -->
       ${isOpen && html`
-        <div className="pointer-events-auto w-[calc(100vw-1.5rem)] sm:w-[380px] max-w-[380px] h-[460px] sm:h-[520px] max-h-[72vh] bg-white rounded-3xl shadow-2xl border border-purple-100 flex flex-col overflow-hidden animate-fadeIn">
+        <div className="pointer-events-auto w-[calc(100vw-1.5rem)] sm:w-[380px] max-w-[380px] h-[460px] sm:h-[550px] max-h-[75vh] bg-white dark:bg-[#1C1C1E] rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.12)] border border-gray-200 dark:border-white/10 flex flex-col overflow-hidden animate-fadeIn">
           
           <!-- Header -->
-          <div className="bg-gradient-to-r from-purple-950 via-purple-900 to-indigo-900 text-white p-4 flex items-center justify-between shadow-sm">
+          <div className="bg-white dark:bg-[#1C1C1E] border-b border-gray-100 dark:border-white/5 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-purple-300 backdrop-blur-sm border border-white/10">
-                <i className="fas fa-robot text-lg"></i>
+              <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-white/5 flex items-center justify-center text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
               </div>
               <div>
-                <div className="flex items-center gap-1.5">
-                  <h4 className="text-xs font-black">TDV BTL Turnir AI</h4>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                </div>
-                <p className="text-[10px] text-purple-200">Canlı Məlumat Köməkçisi (${activeYear})</p>
+                <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-tight">AI Assistant</h3>
+                <p className="text-[10px] text-gray-500 font-medium">TDV BTL Tournament</p>
               </div>
             </div>
-            
-            <button
-              onClick=${() => setIsOpen(false)}
-              className="text-purple-300 hover:text-white transition w-8 h-8 rounded-full flex items-center justify-center hover:bg-white/10"
-            >
-              <i className="fas fa-times"></i>
+            <button onClick=${() => setIsOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
           </div>
 
-          <!-- Quick Suggestion Pills -->
-          <div className="bg-purple-50/70 border-b border-purple-100 px-3 py-2 flex items-center gap-1.5 overflow-x-auto text-[10px]">
-            <button
-              onClick=${(e) => handleSendMessage(e, 'Bu il kimlər liderdir və cədvəldə vəziyyət necədir?')}
-              className="bg-white hover:bg-purple-100 text-purple-950 font-bold px-2.5 py-1 rounded-xl whitespace-nowrap shadow-2xs border border-purple-100 transition"
-            >
-              🏆 Liderlər
-            </button>
-            <button
-              onClick=${(e) => handleSendMessage(e, 'Bombardirlər kimdir və ən çox qolu kim vurub?')}
-              className="bg-white hover:bg-purple-100 text-purple-950 font-bold px-2.5 py-1 rounded-xl whitespace-nowrap shadow-2xs border border-purple-100 transition"
-            >
-              ⚽ Bombardirlər
-            </button>
-            <button
-              onClick=${(e) => handleSendMessage(e, 'Son keçirilən oyunların nəticələri necə olub?')}
-              className="bg-white hover:bg-purple-100 text-purple-950 font-bold px-2.5 py-1 rounded-xl whitespace-nowrap shadow-2xs border border-purple-100 transition"
-            >
-              📅 Son Matçlar
-            </button>
-          </div>
-
-          <!-- Messages Scroll View -->
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs bg-slate-50/50">
-            ${messages.map((m, idx) => html`
-              <div key=${idx} className=${`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className=${`max-w-[85%] p-3 rounded-2xl text-xs leading-relaxed ${
-                  m.role === 'user'
-                    ? 'bg-purple-950 text-white rounded-br-none shadow-sm'
-                    : 'bg-white border border-gray-100 text-gray-800 rounded-bl-none shadow-xs whitespace-pre-line'
-                }`}>
-                  ${m.role === 'model' && html`
-                    <div className="text-[9px] font-black uppercase text-purple-700 mb-1 flex items-center gap-1">
-                      <i className="fas fa-robot text-[10px]"></i> BTL Bot
+          <!-- Messages Area -->
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-50/50 dark:bg-[#141415]" ref=${messagesEndRef}>
+            <div className="flex flex-col gap-4 min-h-full">
+              ${messages.map((msg, idx) => {
+                const isUser = msg.role === 'user';
+                return html`
+                  <div key=${idx} className=`flex ${isUser ? 'justify-end' : 'justify-start'}`>
+                    <div className=`max-w-[85%] px-4 py-2.5 rounded-2xl text-sm font-medium leading-relaxed ${
+                      isUser 
+                        ? 'bg-[#1C1C1E] dark:bg-white text-white dark:text-gray-900 rounded-br-sm shadow-sm' 
+                        : 'bg-white dark:bg-[#2C2C2E] border border-gray-100 dark:border-transparent text-gray-800 dark:text-gray-200 rounded-bl-sm shadow-sm'
+                    }`>
+                      ${msg.text}
                     </div>
-                  `}
-                  ${m.text}
+                  </div>
+                `;
+              })}
+              
+              ${isLoading && html`
+                <div className="flex justify-start">
+                  <div className="px-4 py-3 bg-white dark:bg-[#2C2C2E] border border-gray-100 dark:border-transparent rounded-2xl rounded-bl-sm shadow-sm flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style=${{ animationDelay: '0ms' }}></span>
+                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style=${{ animationDelay: '150ms' }}></span>
+                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style=${{ animationDelay: '300ms' }}></span>
+                  </div>
                 </div>
-              </div>
-            `)}
-
-            ${isLoading && html`
-              <div className="flex justify-start">
-                <div className="bg-white border border-gray-100 rounded-2xl p-3 text-xs rounded-bl-none shadow-xs flex items-center gap-2 text-purple-900 font-bold">
-                  <i className="fas fa-spinner fa-spin text-purple-600"></i>
-                  <span>Məlumatlar analiz edilir...</span>
-                </div>
-              </div>
-            `}
-            <div ref=${messagesEndRef} />
+              `}
+            </div>
           </div>
 
-          <!-- Chat Input -->
-          <form onSubmit=${handleSendMessage} className="p-3 bg-white border-t border-gray-100 flex items-center gap-2">
-            <input
-              type="text"
-              value=${query}
-              onChange=${(e) => setQuery(e.target.value)}
-              placeholder=${lang === 'en' ? 'Ask a question...' : 'Turnir barədə sual yazın...'}
-              className="flex-1 bg-gray-50 border border-gray-200 text-xs rounded-xl p-2.5 font-medium focus:outline-none focus:border-purple-900 transition"
-              disabled=${isLoading}
-            />
-            <button
-              type="submit"
-              disabled=${isLoading || !query.trim()}
-              className="w-9 h-9 rounded-xl bg-purple-950 hover:bg-purple-900 text-white flex items-center justify-center text-xs transition shadow-sm disabled:opacity-40"
-            >
-              <i className="fas fa-paper-plane"></i>
-            </button>
-          </form>
+          <!-- Quick Prompts (Linear Style Pills) -->
+          ${messages.length <= 2 && !isLoading && html`
+            <div className="px-4 py-2 bg-gray-50/50 dark:bg-[#141415] flex items-center gap-2 overflow-x-auto no-scrollbar border-t border-gray-100 dark:border-white/5">
+              ${quickQuestions.map(q => html`
+                <button
+                  key=${q}
+                  onClick=${() => handleAsk(q)}
+                  className="shrink-0 px-3 py-1.5 bg-white dark:bg-[#2C2C2E] border border-gray-200 dark:border-white/10 rounded-full text-[11px] font-semibold text-gray-600 dark:text-gray-300 hover:border-gray-400 dark:hover:border-gray-500 transition-colors shadow-sm"
+                >
+                  ${q}
+                </button>
+              `)}
+            </div>
+          `}
 
+          <!-- Input Area -->
+          <div className="p-3 bg-white dark:bg-[#1C1C1E] border-t border-gray-100 dark:border-white/5">
+            <div className="flex items-end gap-2 bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-2xl p-1.5 focus-within:border-gray-300 dark:focus-within:border-white/20 focus-within:ring-2 focus-within:ring-gray-100 dark:focus-within:ring-white/5 transition-all">
+              <textarea
+                value=${query}
+                onInput=${(e) => {
+                  setQuery(e.target.value);
+                  e.target.style.height = 'auto';
+                  e.target.style.height = (e.target.scrollHeight < 100 ? e.target.scrollHeight : 100) + 'px';
+                }}
+                onKeyDown=${handleKeyDown}
+                placeholder=${lang === 'az' ? 'Soruş...' : 'Ask anything...'}
+                className="flex-1 bg-transparent border-none text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-0 resize-none max-h-[100px] min-h-[24px] py-2 px-3 overflow-y-auto"
+                rows="1"
+              ></textarea>
+              <button
+                onClick=${() => handleAsk()}
+                disabled=${!query.trim() || isLoading}
+                className="shrink-0 p-2 rounded-xl bg-[#1C1C1E] dark:bg-white text-white dark:text-gray-900 disabled:opacity-40 disabled:active:scale-100 hover:bg-[#2C2C2E] transition-all active:scale-95 mb-0.5 mr-0.5"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+              </button>
+            </div>
+            <div className="text-center mt-2">
+              <span className="text-[9px] text-gray-400 font-medium">Powered by Gemini AI</span>
+            </div>
+          </div>
         </div>
       `}
     </div>

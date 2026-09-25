@@ -83,249 +83,157 @@ export default function GlobalSearchModal({
 
   return html`
     <div 
-      className="fixed inset-0 z-50 overflow-y-auto bg-purple-950/70 backdrop-blur-md flex items-start justify-center p-3 sm:p-6 pt-12 sm:pt-20 animate-fadeIn"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/40 backdrop-blur-[16px] flex items-start justify-center p-3 sm:p-6 pt-12 sm:pt-20 animate-fadeIn"
       onClick=${(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full shadow-2xl border border-purple-100 dark:border-slate-800 overflow-hidden flex flex-col max-h-[85vh]">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-2xl rounded-[20px] p-2 max-w-2xl w-full shadow-2xl border border-white/40 dark:border-white/10 flex flex-col max-h-[85vh] ring-1 ring-black/5">
         
         <!-- Search Input Header -->
-        <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-slate-800 flex items-center gap-3 bg-gray-50/70 dark:bg-slate-950/50">
-          <i className="fas fa-search text-lg text-purple-900 dark:text-purple-400 shrink-0"></i>
+        <div className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-zinc-900 rounded-[14px] shadow-sm border border-gray-100 dark:border-zinc-800">
+          <svg className="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           
           <input
             ref=${inputRef}
             type="text"
             value=${query}
             onInput=${(e) => setQuery(e.target.value)}
-            placeholder=${lang === 'az' ? 'Oyunçu, sinif və ya matç axtarın... (Məs: Taleh, 11A)' : 'Search players, classes, or matches... (e.g. Taleh, 11A)'}
-            className="flex-1 bg-transparent text-sm sm:text-base font-bold text-purple-950 dark:text-white placeholder-gray-400 focus:outline-none"
+            placeholder=${lang === 'az' ? 'Axtarış (Oyunçular, Komandalar, Matçlar...)' : 'Search (Players, Teams, Matches...)'}
+            className="flex-1 bg-transparent text-base font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none"
           />
 
           ${loading && html`
             <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-600 border-t-transparent shrink-0"></div>
           `}
 
-          ${query && html`
-            <button
-              onClick=${() => setQuery('')}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
-              title="Təmizlə"
-            >
-              <i className="fas fa-times-circle text-sm"></i>
-            </button>
-          `}
-
-          <span className="hidden sm:inline text-[10px] font-black uppercase text-gray-400 bg-gray-200/60 dark:bg-slate-800 px-2 py-0.5 rounded-md">
-            ESC
-          </span>
+          <div className="flex items-center gap-1.5 shrink-0 hidden sm:flex">
+            ${query && html`
+              <button onClick=${() => setQuery('')} className="p-1 text-gray-400 hover:text-gray-600">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+              </button>
+            `}
+            <kbd className="px-2 py-0.5 bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-md text-[10px] font-bold text-gray-500 tracking-widest shadow-sm">ESC</kbd>
+          </div>
         </div>
 
-        <!-- Search Results / Body -->
-        <div className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-6">
+        <!-- Results Area -->
+        <div className="overflow-y-auto flex-1 p-2 space-y-4 mt-2">
           
-          <!-- Empty Query: Quick suggestions -->
-          ${(!query || query.trim().length < 2) && html`
-            <div className="py-6 text-center space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950/70 text-purple-900 dark:text-purple-300 flex items-center justify-center mx-auto text-xl">
-                <i className="fas fa-bolt"></i>
-              </div>
-              <div>
-                <h4 className="text-sm font-black text-purple-950 dark:text-slate-200">
-                  ${lang === 'az' ? 'Bütün Çempionat Arxivində Sürətli Axtarış' : 'Search Across All Championship Archives'}
-                </h4>
-                <p className="text-xs text-gray-400 mt-1">
-                  ${lang === 'az' ? 'Oyunçuların adlarını, sinifləri və ya mərhələləri axtarın' : 'Search by player names, classes, or tournament stages'}
-                </p>
-              </div>
-
-              <!-- Popular tags -->
-              <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">${lang === 'az' ? 'Məşhur:' : 'Popular:'}</span>
-                ${popularQueries.map(tag => html`
+          ${query.trim() === '' ? html`
+            <div className="p-8 text-center text-gray-400 dark:text-zinc-500">
+              <svg className="w-12 h-12 mx-auto mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <p className="text-sm font-medium">${lang === 'az' ? 'Axtarışa başlamaq üçün yazın' : 'Type to start searching'}</p>
+              <div className="flex flex-wrap justify-center gap-2 mt-4">
+                ${popularQueries.map(pq => html`
                   <button
-                    key=${tag}
-                    onClick=${() => setQuery(tag)}
-                    className="bg-purple-50 dark:bg-slate-800 hover:bg-purple-100 text-purple-950 dark:text-purple-200 text-xs font-extrabold px-3 py-1 rounded-xl transition border border-purple-100/70 dark:border-slate-700"
+                    key=${pq}
+                    onClick=${() => setQuery(pq)}
+                    className="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-zinc-800 text-xs font-semibold text-gray-600 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
                   >
-                    ${tag}
+                    ${pq}
                   </button>
                 `)}
               </div>
             </div>
-          `}
-
-          <!-- Query with No Results -->
-          ${query && query.trim().length >= 2 && !loading && totalResults === 0 && html`
-            <div className="py-12 text-center text-gray-400 space-y-2">
-              <i className="fas fa-search-minus text-3xl opacity-40"></i>
-              <p className="text-sm font-bold text-purple-950 dark:text-slate-300">
-                "${query}" ${lang === 'az' ? 'üzrə nəticə tapılmadı.' : 'not found.'}
-              </p>
-              <p className="text-xs text-gray-400">
-                ${lang === 'az' ? 'Zəhmət olmasa başqa oyunçu adı və ya sinif daxil edin.' : 'Please try a different player name or class.'}
-              </p>
+          ` : totalResults === 0 && !loading ? html`
+            <div className="p-12 text-center text-gray-400">
+              <p className="text-sm font-medium">${lang === 'az' ? 'Heç nə tapılmadı' : 'No results found'}</p>
             </div>
-          `}
-
-          <!-- Section 1: PLAYERS -->
-          ${results.players.length > 0 && html`
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between pb-1 border-b border-gray-100 dark:border-slate-800">
-                <span className="text-[11px] font-black uppercase tracking-wider text-purple-950 dark:text-purple-300 flex items-center gap-1.5">
-                  <i className="fas fa-running text-green-500"></i>
-                  <span>${lang === 'az' ? 'Oyunçular' : 'Players'}</span>
-                </span>
-                <span className="text-[10px] text-gray-400 font-bold">${results.players.length} ${lang === 'az' ? 'nəticə' : 'results'}</span>
-              </div>
-
-              <div className="space-y-2">
-                ${results.players.map(p => html`
-                  <div
-                    key=${p.normalizedName}
-                    onClick=${() => {
-                      onClose();
-                      if (onSelectPlayer) onSelectPlayer(p.name);
-                    }}
-                    className="group bg-white dark:bg-slate-800/80 hover:bg-purple-50/50 dark:hover:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700 transition cursor-pointer flex items-center justify-between gap-3 shadow-2xs"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-900 dark:text-purple-300 flex items-center justify-center font-black text-sm shrink-0">
-                        ${p.isKeeper ? '🧤' : '🏃'}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <h5 className="font-extrabold text-sm text-purple-950 dark:text-white truncate group-hover:text-purple-900 transition">
-                            ${p.name}
-                          </h5>
-                          <span className="text-[9px] font-black uppercase text-purple-900 dark:text-purple-300 bg-purple-50 dark:bg-purple-950 px-1.5 py-0.2 rounded">
-                            ${p.classes.join(', ')}
-                          </span>
+          ` : html`
+            <div className="space-y-6">
+              
+              <!-- Players Category -->
+              ${results.players.length > 0 && html`
+                <div>
+                  <div className="px-2 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">${t('players')}</div>
+                  <div className="flex flex-col gap-1">
+                    ${results.players.map(player => {
+                      const rating = player.overallRating || 6.5;
+                      const badgeClass = getSofascoreBadgeStyle(rating);
+                      return html`
+                        <div
+                          key=${player.id}
+                          onClick=${() => { onSelectPlayer(player); onClose(); }}
+                          className="group flex items-center justify-between p-2.5 rounded-[12px] hover:bg-white dark:hover:bg-zinc-800 hover:shadow-sm transition-all cursor-pointer border border-transparent hover:border-gray-100 dark:hover:border-zinc-700"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 flex items-center justify-center font-bold text-xs shrink-0">
+                              ${player.name.charAt(0)}
+                            </div>
+                            <div>
+                              <div className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-purple-600 transition-colors">${player.name}</div>
+                              <div className="text-[10px] text-gray-500 font-medium">${player.class} • ${player.position || 'Oyunçu'}</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="hidden sm:flex text-[10px] text-gray-400 font-semibold gap-3">
+                              <span>${player.goals} Qol</span>
+                              <span>${player.assists} Ast</span>
+                            </div>
+                            <div className=`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-black tabular-nums ${badgeClass}`>${rating}</div>
+                            <kbd className="hidden group-hover:inline-block px-1.5 py-0.5 bg-gray-50 dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded text-[9px] font-bold text-gray-400">↵</kbd>
+                          </div>
                         </div>
-                        <p className="text-[11px] text-gray-400 font-medium truncate mt-0.5">
-                          ${p.years.join(' • ')}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      ${p.totalGoals > 0 && html`
-                        <span className="goal-badge px-2 py-0.5 rounded-lg text-xs font-black">
-                          ⚽ ${p.totalGoals}
-                        </span>
-                      `}
-                      <span className=${`text-xs font-black px-2 py-0.5 rounded-md ${getSofascoreBadgeStyle(p.overallRating)}`}>
-                        ${p.overallRating}
-                      </span>
-                      <i className="fas fa-chevron-right text-[10px] text-gray-300 group-hover:text-purple-600 transition pl-1"></i>
-                    </div>
+                      `;
+                    })}
                   </div>
-                `)}
-              </div>
-            </div>
-          `}
+                </div>
+              `}
 
-          <!-- Section 2: CLASSES / TEAMS -->
-          ${results.classes.length > 0 && html`
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between pb-1 border-b border-gray-100 dark:border-slate-800">
-                <span className="text-[11px] font-black uppercase tracking-wider text-purple-950 dark:text-purple-300 flex items-center gap-1.5">
-                  <i className="fas fa-shield-alt text-sky-500"></i>
-                  <span>${lang === 'az' ? 'Siniflər və Komandalar' : 'Classes & Teams'}</span>
-                </span>
-                <span className="text-[10px] text-gray-400 font-bold">${results.classes.length} ${lang === 'az' ? 'nəticə' : 'results'}</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                ${results.classes.map(c => html`
-                  <div
-                    key=${c.name}
-                    onClick=${() => {
-                      onClose();
-                      if (onSelectClass) onSelectClass(c.name, c.years[0], c.division);
-                    }}
-                    className="group bg-white dark:bg-slate-800/80 hover:bg-sky-50/40 dark:hover:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700 transition cursor-pointer flex items-center justify-between shadow-2xs"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-sky-100 dark:bg-sky-950/70 text-sky-800 dark:text-sky-300 flex items-center justify-center font-black text-xs">
-                        🛡️
+              <!-- Classes Category -->
+              ${results.classes.length > 0 && html`
+                <div>
+                  <div className="px-2 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">${lang === 'az' ? 'Komandalar' : 'Teams'}</div>
+                  <div className="flex flex-col gap-1">
+                    ${results.classes.map(cls => html`
+                      <div
+                        key=${cls.id}
+                        onClick=${() => { onSelectClass(cls); onClose(); }}
+                        className="group flex items-center justify-between p-2.5 rounded-[12px] hover:bg-white dark:hover:bg-zinc-800 hover:shadow-sm transition-all cursor-pointer border border-transparent hover:border-gray-100 dark:hover:border-zinc-700"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">
+                            ${cls.name}
+                          </div>
+                          <div className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-emerald-600 transition-colors">${cls.name} ${lang === 'az' ? 'Sinfi' : 'Class'}</div>
+                        </div>
+                        <kbd className="hidden group-hover:inline-block px-1.5 py-0.5 bg-gray-50 dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded text-[9px] font-bold text-gray-400">↵</kbd>
                       </div>
-                      <div>
-                        <h5 className="font-extrabold text-xs text-purple-950 dark:text-white group-hover:text-sky-700 transition">
-                          ${c.name} Sinfi
-                        </h5>
-                        <p className="text-[10px] text-gray-400">
-                          ${c.years.join(', ')}
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-bold text-sky-700 bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded-md">
-                      ${lang === 'az' ? 'Cədvələ Bax' : 'View'} →
-                    </span>
+                    `)}
                   </div>
-                `)}
-              </div>
-            </div>
-          `}
+                </div>
+              `}
 
-          <!-- Section 3: MATCHES -->
-          ${results.matches.length > 0 && html`
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between pb-1 border-b border-gray-100 dark:border-slate-800">
-                <span className="text-[11px] font-black uppercase tracking-wider text-purple-950 dark:text-purple-300 flex items-center gap-1.5">
-                  <i className="fas fa-futbol text-emerald-500"></i>
-                  <span>${lang === 'az' ? 'Matçlar' : 'Matches'}</span>
-                </span>
-                <span className="text-[10px] text-gray-400 font-bold">${results.matches.length} ${lang === 'az' ? 'nəticə' : 'results'}</span>
-              </div>
-
-              <div className="space-y-2">
-                ${results.matches.map(m => html`
-                  <div
-                    key=${m.id}
-                    onClick=${() => {
-                      onClose();
-                      if (onSelectMatch) onSelectMatch(m);
-                    }}
-                    className="group bg-white dark:bg-slate-800/80 hover:bg-emerald-50/40 dark:hover:bg-slate-800 p-3 rounded-2xl border border-gray-100 dark:border-slate-700 transition cursor-pointer flex items-center justify-between shadow-2xs"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-black uppercase text-purple-900 dark:text-purple-300 bg-purple-50 dark:bg-purple-950 px-1.5 py-0.2 rounded">
-                          ${m.stage}
-                        </span>
-                        <span className="text-[10px] text-gray-400 font-semibold">${m.year}</span>
-                        ${m.videoUrl && html`
-                          <span className="text-red-500 text-[10px]"><i className="fab fa-youtube"></i></span>
-                        `}
+              <!-- Matches Category -->
+              ${results.matches.length > 0 && html`
+                <div>
+                  <div className="px-2 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">${t('matches')}</div>
+                  <div className="flex flex-col gap-1">
+                    ${results.matches.map(match => html`
+                      <div
+                        key=${match.id}
+                        onClick=${() => { onSelectMatch(match); onClose(); }}
+                        className="group flex items-center justify-between p-2.5 rounded-[12px] hover:bg-white dark:hover:bg-zinc-800 hover:shadow-sm transition-all cursor-pointer border border-transparent hover:border-gray-100 dark:hover:border-zinc-700"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full border border-gray-200 dark:border-zinc-700 flex items-center justify-center text-[10px] font-black shrink-0">
+                            VS
+                          </div>
+                          <div>
+                            <div className="font-bold text-gray-900 dark:text-white text-sm group-hover:text-sky-600 transition-colors">${match.team1} <span className="text-gray-400 font-normal px-1">vs</span> ${match.team2}</div>
+                            <div className="text-[10px] text-gray-500 font-medium uppercase">${match.stage} ${match.isFinished ? `• ${match.score1} - ${match.score2}` : ''}</div>
+                          </div>
+                        </div>
+                        <kbd className="hidden group-hover:inline-block px-1.5 py-0.5 bg-gray-50 dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded text-[9px] font-bold text-gray-400">↵</kbd>
                       </div>
-                      <p className="text-xs font-black text-purple-950 dark:text-white mt-1 group-hover:text-emerald-700 transition">
-                        ${m.teamA} ${m.scoreA} - ${m.scoreB} ${m.teamB}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-gray-400 group-hover:text-purple-900 transition">
-                        ${lang === 'az' ? 'Detallar' : 'Details'} →
-                      </span>
-                    </div>
+                    `)}
                   </div>
-                `)}
-              </div>
+                </div>
+              `}
+
             </div>
           `}
 
         </div>
-
-        <!-- Search Modal Footer -->
-        <div className="p-3 bg-gray-50 dark:bg-slate-950/80 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center text-[11px] text-gray-400 px-5">
-          <span className="flex items-center gap-2">
-            <span><i className="fas fa-keyboard mr-1"></i> <b>ESC</b> ${lang === 'az' ? 'bağlayır' : 'closes'}</span>
-            <span>•</span>
-            <span><b>Ctrl+K</b> ${lang === 'az' ? 'açar' : 'opens'}</span>
-          </span>
-          <span className="text-purple-900 dark:text-purple-400 font-bold">TDV BTL Mini-Football</span>
-        </div>
-
       </div>
     </div>
   `;
